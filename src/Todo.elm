@@ -20,16 +20,28 @@ main =
 
 
 type Msg
-    = All
+    = Add
+
+
+emptyState : Model
+emptyState =
+    { entries = [ { description = "First task" }, { description = "Second task" } ]
+    }
 
 
 init : Maybe Model -> ( Model, Cmd msg )
 init _ =
-    ( "", Cmd.none )
+    ( emptyState, Cmd.none )
+
+
+type alias Entry =
+    { description : String
+    }
 
 
 type alias Model =
-    String
+    { entries : List Entry
+    }
 
 
 update : Msg -> Model -> ( Model, Cmd msg )
@@ -39,4 +51,24 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    text "Hello World"
+    div [ class "todomvc-wrapper" ]
+        [ section [ class "todoapp" ]
+            [ showEntries model
+            ]
+        ]
+
+
+showEntries : Model -> Html Msg
+showEntries model =
+    section [ class "main" ]
+        [ ul [ class "todo-list" ] (List.map showEntry model.entries)
+        ]
+
+
+showEntry : Entry -> Html Msg
+showEntry entry =
+    li []
+        [ div [ class "view" ]
+            [ label [] [ text entry.description ]
+            ]
+        ]
